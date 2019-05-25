@@ -1,0 +1,18 @@
+version: "2"
+services:
+  apache:
+    build: ./
+    labels:
+      - "traefik.backend=alpine"
+      - "traefik.frontend.rule=Host:alpine.docker.localhost"
+    environment:
+      - MYSQL_HOST=mysqlsrv
+    volumes:
+      - ./public:/app/public
+    cap_add:
+      - SYS_TIME
+      - SYS_NICE
+networks:
+  default:
+    external:
+      name: mysql-compose-network
