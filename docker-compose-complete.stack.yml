@@ -1,0 +1,38 @@
+version: '2'
+
+services:
+  apache:
+    image: robsonggade/php7
+    environment:
+      - MYSQL_HOST=mysqlsrv
+    volumes:
+      - /var/lib/docker/volumes/maintainer_server_php7/app/public:/app/public
+    cap_add:
+      - SYS_TIME
+      - SYS_NICE
+    ports:
+      - "80:80"
+      
+  mysqlsrv:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "password"
+    ports:
+      - "3306:3306"
+    volumes:
+      - /var/lib/docker/volumes/maintainer_server_php7/app/db/mysql:/var/lib/mysql
+      - /var/lib/docker/volumes/maintainer_server_php7/app/db/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - mysql-compose-network
+
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+    networks:
+      - mysql-compose-network
+
+networks: 
+  mysql-compose-network:
+    driver: bridge
